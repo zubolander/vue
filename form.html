@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue.js Vuelidate Example</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuelidate@0.7.5"></script>
+</head>
+<body>
+
+<div id="app">
+    <form @submit.prevent="submitForm">
+        <label for="name">Name:</label>
+        <input v-model.trim="name" :class="{ 'is-invalid': $v.name.$error }" type="text" id="name">
+        <div v-if="!$v.name.required">Name is required.</div>
+
+        <label for="age">Age:</label>
+        <input v-model.trim="$v.age.$model" :class="{ 'is-invalid': $v.age.$error }" type="number" id="age">
+        <div v-if="!$v.age.required">Age is required.</div>
+        <div v-if="!$v.age.numeric">Age must be a number.</div>
+
+        <button type="submit" :disabled="$v.$invalid">Submit</button>
+    </form>
+</div>
+
+<script>
+    Vue.use(Vuelidate.default);
+
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                name: '',
+                age: null,
+            };
+        },
+        validations: {
+            name: {
+                required: validators.required,
+            },
+            age: {
+                required: validators.required,
+                numeric: validators.numeric,
+            },
+        },
+        methods: {
+            submitForm() {
+                if (this.$v.$invalid) {
+                    console.log('Form has errors');
+                } else {
+                    console.log('Form submitted successfully');
+                    // You can perform additional actions here, like sending data to the server.
+                }
+            },
+        },
+    });
+</script>
+
+<style>
+    .is-invalid {
+        border-color: red;
+    }
+</style>
+
+</body>
+</html>
